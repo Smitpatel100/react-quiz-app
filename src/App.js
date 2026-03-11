@@ -3,7 +3,6 @@ import QuizCard from "./components/QuizCard";
 import { quizData } from "./data/quizData";
 import "./styles.css";
 
-
 function App() {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -35,84 +34,92 @@ function App() {
     setScore(0);
     setQuizFinished(false);
   };
-   const progressPercentage =
-   ((currentQuestionIndex + 1) / questions.length) * 100;
+
+  const progressPercentage =
+    ((currentQuestionIndex + 1) / questions.length) * 100;
 
   return (
-  <div className="container">
-    <div className="card">
+    <div className="container">
+      <div className="card">
 
-      {/* Topic Selection */}
-      {!selectedTopic && (
-        <>
-          <h1>Select a Quiz</h1>
-          <QuizCard topic="java" setSelectedTopic={setSelectedTopic} />
-          <QuizCard topic="sql" setSelectedTopic={setSelectedTopic} />
-          <QuizCard topic="react" setSelectedTopic={setSelectedTopic} />
-        </>
-      )}
+        {!selectedTopic && (
+          <>
+            <h1>Select a Quiz</h1>
+            <QuizCard topic="java" setSelectedTopic={setSelectedTopic} />
+            <QuizCard topic="sql" setSelectedTopic={setSelectedTopic} />
+            <QuizCard topic="react" setSelectedTopic={setSelectedTopic} />
+          </>
+        )}
 
-      {/* Quiz Screen */}
-      {selectedTopic && !quizFinished && (
-        <>
-          <h2>{selectedTopic.toUpperCase()} Quiz</h2>
+        {selectedTopic && !quizFinished && (
+          <>
+            <h2>{selectedTopic.toUpperCase()} Quiz</h2>
 
-          <p>
-            Question {currentQuestionIndex + 1} of {questions.length}
-          </p>
-           <div className="progress-container">
-             <div
-             className="progress-bar"
-             style={{ width: `${progressPercentage}%` }}
-             ></div>
-           </div>
+            <p>
+              Question {currentQuestionIndex + 1} of {questions.length}
+            </p>
 
-          <h3>{questions[currentQuestionIndex].question}</h3>
+            <div className="progress-container">
+              <div
+                className="progress-bar"
+                style={{ width: `${progressPercentage}%` }}
+              ></div>
+            </div>
 
-          {questions[currentQuestionIndex].options.map((option, index) => (
+            <h3>{questions[currentQuestionIndex].question}</h3>
+
+            {questions[currentQuestionIndex].options.map((option, index) => (
+              <button
+                key={index}
+                className={`option-btn ${
+                  selectedOption === index ? "selected" : ""
+                }`}
+                onClick={() => setSelectedOption(index)}
+              >
+                {option}
+              </button>
+            ))}
+
             <button
-              key={index}
-              className={`option-btn ${
-                selectedOption === index ? "selected" : ""
-              }`}
-              onClick={() => setSelectedOption(index)}
+              className="next-btn"
+              onClick={handleNext}
+              disabled={selectedOption === null}
             >
-              {option}
+              {currentQuestionIndex === questions.length - 1
+                ? "Finish"
+                : "Next"}
             </button>
-          ))}
+          </>
+        )}
 
-          <button
-            className="next-btn"
-            onClick={handleNext}
-            disabled={selectedOption === null}
-          >
-            {currentQuestionIndex === questions.length - 1
-              ? "Finish"
-              : "Next"}
-          </button>
-        </>
-      )}
+        {quizFinished && (
+          <>
+            <h2>Quiz Completed</h2>
 
-      {/* Result Screen */}
-      {quizFinished && (
-        <>
-          <h2>Quiz Completed </h2>
-          <h3>
-            Score: {score} / {questions.length}
-          </h3>
-          <h3>
-            Percentage: {Math.round((score / questions.length) * 100)}%
-          </h3>
+            <h3>
+              Score: {score} / {questions.length}
+            </h3>
 
-          <button className="restart-btn" onClick={restartQuiz}>
-            Restart Quiz
-          </button>
-        </>
-      )}
+            <h3>
+              Percentage: {Math.round((score / questions.length) * 100)}%
+            </h3>
 
+            <h3>
+              {score >= 8
+                ? "Excellent!"
+                : score >= 5
+                ? "Good job!"
+                : "Keep practicing!"}
+            </h3>
+
+            <button className="restart-btn" onClick={restartQuiz}>
+              Restart Quiz
+            </button>
+          </>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;
